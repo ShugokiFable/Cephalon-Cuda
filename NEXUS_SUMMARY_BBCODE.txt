@@ -1,0 +1,3 @@
+The Overwolf-free Warframe companion. Strictly external: read-only EE.log, public APIs, and screen OCR — zero memory reading, zero hooks, zero injection. Return Protocol for veterans, Tenno Path for new players, Shop Guardian, live market, relic overlays, eight live themes, and a streaming OpenRouter AI advisor.
+
+- MADE WITH GPT SOL 5.6 FABLE

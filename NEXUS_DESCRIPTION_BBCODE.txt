@@ -1,53 +1,86 @@
 [center][size=6][b]CEPHALON CUDA 2.2[/b][/size]
 [size=4]RETURN PROTOCOL[/size]
-A modern Warframe companion for new, active and returning players.[/center]
+The ultimate Overwolf-free Warframe companion — safe, clean, and strictly external.[/center]
 
-[center][color=#00ff9c][b]A HIGH-END TENNO COMMAND LAYER[/b][/color][/center]
-Cephalon Cuda now ships with a fully polished, theme-aware interface: a modern command rail, focused workspace headers, responsive data surfaces, refined tables and controls, smooth reduced-motion-aware transitions, and a rebuilt AI conversation experience. Eight complete palettes and custom accents retint the entire app, including overlays and the Advisor.
+[center][color=#00ff9c][b]ZERO MEMORY READING · ZERO HOOKS · ZERO INJECTION[/b][/color][/center]
 
+[heading]Description[/heading]
+Cephalon Cuda is a native Windows app ([b].NET 8 WPF[/b]) built as a serious alternative to Overwolf-heavy companions like AlecaFrame — without the bloat, without the storefront, and without touching the game process.
 
-[heading]Stop guessing what to do next[/heading]
-Warframe is packed with quests, currencies, shops, relics, crafting timers, builds, rotations and progression traps. Cephalon Cuda turns that maze into a practical decision layer.
-
+It watches Warframe [b]from the outside only[/b]:
 [list]
-[*][b]Just Got Back?[/b] builds a controlled return plan from local activity, goals, Foundry state, roadmap progress and current live data.
-[*][b]Tenno Path[/b] gives new players a five-stage roadmap and routine-aware next steps.
-[*][b]Shop Guardian[/b] warns against bad Platinum value such as Credits, routine resources, random mod packs, normal Foundry rushing and overpriced base gear.
-[*][b]Build Synthesis[/b] combines item stats, community build consensus, Forma cost, acquisition routes, substitutes and current market context.
-[*][b]Navigator[/b] explains exactly where an item comes from and what prerequisites are required.
-[*][b]Keep / Sell / Ducat / Subsume[/b] checks items before you destroy something painful to reacquire.
+[*]read-only tail of [code]%LocalAppData%\Warframe\EE.log[/code]
+[*]DXGI Desktop Duplication + OCR for on-screen intel
+[*]public APIs (world state, drops, market, relics, Mastery)
+[/list]
+Everything feeds a local SQLite knowledge layer and an optional streaming [b]OpenRouter[/b] AI advisor. Personal secrets (API keys) are encrypted at rest with [b]Windows DPAPI[/b].
+
+Version [b]2.2 · Return Protocol[/b] adds a full returning-player command layer, automatic official-drop intelligence, evidence-aware build synthesis, Shop Guardian Platinum guardrails, and a rebuilt high-end interface with [b]eight live themes[/b] (Verv, Lotus, Orokin, Entrati, Corpus, Grineer, Void, High Contrast) plus custom accents that retheme open workspaces, overlays, and the Advisor instantly.
+
+[b]100% external. 100% portable. One self-contained exe.[/b]
+
+
+[heading]Installation instructions[/heading]
+Designed for maximum portability.
+[list]
+[*]Download and extract [code]Cephalon_Cuda_2.2_Nexus_Release.zip[/code].[/*]
+[*]Run [code]CephalonCuda.exe[/code] from any folder [b]outside Program Files[/b].[/*]
+[*]Complete the short first-run setup.[/*]
+[*](Optional) Open [b]Settings[/b] and paste an [b]OpenRouter[/b] API key if you want the AI Advisor. The key is stored with Windows DPAPI encryption.[/*]
+[*]For overlay / capture features, run Warframe in [b]Borderless[/b] or [b]Windowed[/b] mode (exclusive fullscreen blocks them).[/*]
+[*]On first launch the app downloads and caches item catalog, official drops, market, relic, Mastery, and world-state data into a local SQLite database under [code]%LocalAppData%\CephalonCuda[/code].[/*]
+[/list]
+[i]No install wizard. No Overwolf. No runtime framework install beyond WebView2 (already present on Windows 11 and most Windows 10 systems).[/i]
+
+
+[heading]Main features[/heading]
+[list]
+[*][b]Just Got Back? · Return Protocol:[/b] Controlled re-entry for veterans. Uses trustworthy local [code]EE.log[/code] activity, goals, Foundry state, roadmap progress, and live source freshness to prioritize ready claims, next objectives, redeem codes, stale data, and old-build / Forma / Catalyst revalidation — without inventing private account state you cannot see.[/*]
+[*][b]Tenno Path:[/b] Five-stage new-player roadmap, routine-aware “what should I do now?”, acquisition navigator, goal stacking, redeem-code tracking, and Keep / Sell / Ducat / Subsume checks.[/*]
+[*][b]Shop Guardian:[/b] Deterministic Platinum protection. Flags Credits, routine resources, Endo, random mod packs, normal Foundry rushes, base gear filler, and other poor-value shortcuts — while treating slots and deliberate progression purchases differently from cosmetics.[/*]
+[*][b]Omniscient AI Advisor:[/b] Streaming WebView2 chat with context injection. Relevant calls can carry Mastery, inventory highlights, Foundry queue, live world state, market intel, official acquisition routes, and recent [code]EE.log[/code] events. Build questions get low-investment stages, upgrade ladders, Forma stop points, substitutes, and source-stamped community consensus — not a blind copy of one popular list.[/*]
+[*][b]Read Screen · Memory & Vision:[/b] OCR arsenal / profile / standings style screens into advisor context without spending a vision call, or snap the client via DXGI and route the frame to a multimodal model when you want true vision.[/*]
+[*][b]Smart Overlay:[/b] Transparent, click-through, always-on-top window that follows the game client. Detects relic reward screens from [code]EE.log[/code], OCRs reward cards, and shows live Platinum / ducat values with the best pick highlighted. Immersive Mode (F8) docks the full companion beside Warframe.[/*]
+[*][b]Market & Trading:[/b] Item search, order books, historical charts, Platinum ledger with in/out analytics, and personal listing sync via your warframe.market name. Optional authenticated sync uses Bearer tokens (legacy JWT-style pastes still accepted).[/*]
+[*][b]Relic Planner & Inventory:[/b] Ranks relics by expected Platinum value per refinement tier; tracks tradable prime parts with live market context.[/*]
+[*][b]Mastery & Foundry:[/b] Full Warframe / weapon catalog checklist with mastery tracking, plus Foundry timers, presets, and claim readiness.[/*]
+[*][b]Live World State:[/b] Void fissures (Steel Path / Void Storm filters), sorties, archon hunts, open-world cycles, Baro Ki'Teer ETAs, and related live intel — refreshed on source-specific freshness windows with ETag / Last-Modified caching and stale-on-error preservation.[/*]
+[*][b]Riven Assistant:[/b] Live riven auction comparables, AI stat grading, price estimate, and reroll / keep style guidance.[/*]
+[*][b]Live Data & Intel dashboard:[/b] Source health, freshness, and refresh controls so you always know whether the advisor is working from current or degraded data.[/*]
+[*][b]Make it yours:[/b] Eight full palettes + custom accents, UI scaling, compact / comfortable density, reduced motion, callsign, startup workspace, advisor style (Direct / Coach / Minimal / Deep-dive), session budget, and overlay options — applied live, no restart.[/*]
 [/list]
 
-[heading]Automatic live intelligence[/heading]
-The app refreshes public item data, official drop data, world state, relics, Mastery data and warframe.market intelligence into a local SQLite database. Named tradables can receive fresh order-book metrics before the advisor answers.
-
-The network layer uses source-specific freshness windows, ETags, Last-Modified, compression, retries and stale-cache preservation. It avoids redownloading unchanged data and never wipes a healthy local database because an upstream service had a bad day.
-
-[heading]Evidence-aware builds[/heading]
-Instead of blindly copying one popular build, Cephalon Cuda can provide:
-
-[list]
-[*]a low-investment working build
-[*]an upgrade ladder
-[*]Forma order and sensible stop points
-[*]missing-mod substitutes and acquisition routes
-[*]mission and faction variants
-[*]community consensus with source, votes, patch and freshness
-[/list]
-
-Community rankings are treated as opinions, not scripture.
-
-[heading]Make it yours[/heading]
-Eight themes, custom accents, UI scaling, compact mode, reduced motion, startup workspace, callsign, advisor style, session budget, overlay settings and Immersive Mode.
 
 [heading]Safety and privacy[/heading]
-Cephalon Cuda does not inject code, read game memory, automate controls or play Warframe. It uses read-only EE.log events, visual capture/OCR, public web data and information you enter. Personal data stays under [font=Courier New]%LocalAppData%\CephalonCuda[/font].
+[list]
+[*]Does [b]not[/b] read game memory.[/*]
+[*]Does [b]not[/b] inject DLLs or hooks.[/*]
+[*]Does [b]not[/b] automate input or play the game.[/*]
+[*]Uses only read-only log tailing, visual capture/OCR, public endpoints, and information you enter or confirm.[/*]
+[*]Local data, caches, settings, logs, and encrypted secrets live under [code]%LocalAppData%\CephalonCuda[/code].[/*]
+[*]Public releases never ship your database, API keys, market account data, screenshots, or logs.[/*]
+[/list]
+
 
 [heading]Requirements[/heading]
 [list]
-[*]64-bit Windows 10 or Windows 11
-[*]WebView2 Runtime
-[*]Internet access for live data
-[*]OpenRouter API key only for AI features
-[*]Borderless or Windowed mode for overlay/capture features
+[*][b]OS:[/b] 64-bit Windows 10 or Windows 11.[/*]
+[*][b]Game display:[/b] Borderless or Windowed for overlay / capture features.[/*]
+[*][b]WebView2 Runtime:[/b] Required for the AI Advisor panel (preinstalled on Windows 11; available as Microsoft’s Evergreen Runtime on Windows 10).[/*]
+[*][b]Internet:[/b] Needed for live data refreshes.[/*]
+[*][b]OpenRouter API key:[/b] Optional — only required for AI Advisor / vision features. Core data workspaces run without it.[/*]
+[*][i](Optional)[/i] [b]Tesseract OCR:[/b] Windows OCR is the default. For Tesseract, place [code]tesseract53.dll[/code], its leptonica dependency, and [code]tessdata\eng.traineddata[/code] in a [code]tesseract[/code] folder next to the executable.[/*]
 [/list]
+
+
+[heading]Uninstall[/heading]
+Delete [code]CephalonCuda.exe[/code]. Remove [code]%LocalAppData%\CephalonCuda[/code] only if you also want to erase settings, progress, caches, and encrypted credentials.
+
+
+[heading]Shout outs[/heading]
+Massive respect to [b]AlecaFrame[/b] for proving how strong a Warframe companion can be. Huge thanks to the [b]warframe.market[/b] team for the catalog, orders, and statistics APIs; to [b]WFCD[/b] / [b]warframestat.us[/b] for world state and drop intelligence; and to Digital Extremes for the game that makes all of this worth building.
+
+
+[center][i]- MADE WITH GPT SOL 5.6 FABLE -[/i][/center]
+
+[b][size=4]ANYTHING made from the opted-in rewards program will go towards Make-A-Wish Foundation.[/size][/b]

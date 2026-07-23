@@ -1,0 +1,92 @@
+<UserControl x:Class="CephalonCuda.Views.RivenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Margin="{DynamicResource Metric.PageMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,12">
+            <TextBlock Text="ROLL EVALUATION" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+            <TextBlock Text="Riven Assistant" Style="{StaticResource H1}" Margin="0"/>
+            <TextBlock Text="Evaluate stats, compare auctions, and avoid paying premium prices for bad rolls." Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: riven input -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="YOUR RIVEN" Style="{StaticResource H2}"/>
+                            <Label Content="Weapon"/>
+                            <ComboBox x:Name="WeaponBox" MaxDropDownHeight="300"/>
+                            <Label Content="Stats (one per line, e.g. '+184% Critical Chance')" Margin="0,8,0,0"/>
+                            <TextBox x:Name="StatsBox" AcceptsReturn="True" Height="110" TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <StackPanel>
+                                    <Label Content="Rerolls"/>
+                                    <TextBox x:Name="RerollsBox" Width="70" Text="0"/>
+                                </StackPanel>
+                                <StackPanel Margin="12,0,0,0">
+                                    <Label Content="Rank"/>
+                                    <TextBox x:Name="RankBox" Width="70" Text="8"/>
+                                </StackPanel>
+                                <StackPanel Margin="12,0,0,0">
+                                    <Label Content="Polarity"/>
+                                    <ComboBox x:Name="PolarityBox" Width="110" SelectedIndex="0">
+                                        <ComboBoxItem Content="madurai"/>
+                                        <ComboBoxItem Content="vazarin"/>
+                                        <ComboBoxItem Content="naramon"/>
+                                        <ComboBoxItem Content="zenurik"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <Button Content="⇩ Fetch comparables" Click="OnFetchComparables"/>
+                                <Button Content="✦ AI valuation" Style="{StaticResource AccentButton}" Margin="8,0,0,0" Click="OnAiValuation"/>
+                            </StackPanel>
+                            <TextBlock x:Name="StatusText" Style="{StaticResource Dim}" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="AI VERDICT" Style="{StaticResource H2}"/>
+                            <TextBox x:Name="VerdictBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                                     MinHeight="180" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"
+                                     Background="Transparent" BorderThickness="0"
+                                     Text="Fetch comparables, then ask for a valuation. The AI sees live auction data plus your player context."/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Right: live auctions -->
+            <Border Grid.Column="1" Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="LIVE AUCTIONS (warframe.market)" Style="{StaticResource H2}"/>
+                    <TextBlock DockPanel.Dock="Top" x:Name="AuctionSummary" Style="{StaticResource Dim}" Margin="0,0,0,8"/>
+                    <DataGrid x:Name="AuctionGrid">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="BUYOUT" Binding="{Binding BuyoutPrice}" Width="70"/>
+                            <DataGridTextColumn Header="START" Binding="{Binding StartingPrice}" Width="60"/>
+                            <DataGridTextColumn Header="RR" Binding="{Binding Rerolls}" Width="45"/>
+                            <DataGridTextColumn Header="RANK" Binding="{Binding ModRank}" Width="55"/>
+                            <DataGridTextColumn Header="MR" Binding="{Binding MasteryLevel}" Width="45"/>
+                            <DataGridTextColumn Header="STATS" Binding="{Binding AttributesDisplay}" Width="*"/>
+                            <DataGridTextColumn Header="OWNER" Binding="{Binding OwnerStatus}" Width="70"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

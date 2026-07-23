@@ -1,0 +1,12 @@
+{
+  "codes": [
+    {
+      "code": "EXAMPLE-CODE",
+      "title": "Example campaign",
+      "reward": "Example cosmetic",
+      "status": "unknown",
+      "expiresAt": null,
+      "sourceUrl": "https://www.warframe.com/promocode"
+    }
+  ]
+}

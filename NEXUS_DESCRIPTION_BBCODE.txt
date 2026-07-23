@@ -1,0 +1,53 @@
+[center][size=6][b]CEPHALON CUDA 2.2[/b][/size]
+[size=4]RETURN PROTOCOL[/size]
+A modern Warframe companion for new, active and returning players.[/center]
+
+[center][color=#00ff9c][b]A HIGH-END TENNO COMMAND LAYER[/b][/color][/center]
+Cephalon Cuda now ships with a fully polished, theme-aware interface: a modern command rail, focused workspace headers, responsive data surfaces, refined tables and controls, smooth reduced-motion-aware transitions, and a rebuilt AI conversation experience. Eight complete palettes and custom accents retint the entire app, including overlays and the Advisor.
+
+
+[heading]Stop guessing what to do next[/heading]
+Warframe is packed with quests, currencies, shops, relics, crafting timers, builds, rotations and progression traps. Cephalon Cuda turns that maze into a practical decision layer.
+
+[list]
+[*][b]Just Got Back?[/b] builds a controlled return plan from local activity, goals, Foundry state, roadmap progress and current live data.
+[*][b]Tenno Path[/b] gives new players a five-stage roadmap and routine-aware next steps.
+[*][b]Shop Guardian[/b] warns against bad Platinum value such as Credits, routine resources, random mod packs, normal Foundry rushing and overpriced base gear.
+[*][b]Build Synthesis[/b] combines item stats, community build consensus, Forma cost, acquisition routes, substitutes and current market context.
+[*][b]Navigator[/b] explains exactly where an item comes from and what prerequisites are required.
+[*][b]Keep / Sell / Ducat / Subsume[/b] checks items before you destroy something painful to reacquire.
+[/list]
+
+[heading]Automatic live intelligence[/heading]
+The app refreshes public item data, official drop data, world state, relics, Mastery data and warframe.market intelligence into a local SQLite database. Named tradables can receive fresh order-book metrics before the advisor answers.
+
+The network layer uses source-specific freshness windows, ETags, Last-Modified, compression, retries and stale-cache preservation. It avoids redownloading unchanged data and never wipes a healthy local database because an upstream service had a bad day.
+
+[heading]Evidence-aware builds[/heading]
+Instead of blindly copying one popular build, Cephalon Cuda can provide:
+
+[list]
+[*]a low-investment working build
+[*]an upgrade ladder
+[*]Forma order and sensible stop points
+[*]missing-mod substitutes and acquisition routes
+[*]mission and faction variants
+[*]community consensus with source, votes, patch and freshness
+[/list]
+
+Community rankings are treated as opinions, not scripture.
+
+[heading]Make it yours[/heading]
+Eight themes, custom accents, UI scaling, compact mode, reduced motion, startup workspace, callsign, advisor style, session budget, overlay settings and Immersive Mode.
+
+[heading]Safety and privacy[/heading]
+Cephalon Cuda does not inject code, read game memory, automate controls or play Warframe. It uses read-only EE.log events, visual capture/OCR, public web data and information you enter. Personal data stays under [font=Courier New]%LocalAppData%\CephalonCuda[/font].
+
+[heading]Requirements[/heading]
+[list]
+[*]64-bit Windows 10 or Windows 11
+[*]WebView2 Runtime
+[*]Internet access for live data
+[*]OpenRouter API key only for AI features
+[*]Borderless or Windowed mode for overlay/capture features
+[/list]

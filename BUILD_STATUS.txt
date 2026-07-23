@@ -1,0 +1,7 @@
+Cephalon Cuda 2.2 · Major UI Rework R3.1
+
+SOURCE STATUS
+- Windows compilation previously reached a successful Release build and self-contained publish.
+- The subsequent UI smoke cycle exposed a runtime XAML GridLength type error.
+- R3.1 corrects all three affected dynamic geometry tokens and makes smoke failures return a non-zero exit code.
+- Run BUILD_V2.2.bat on Windows. Packaging is now blocked if startup or any theme cycle throws.

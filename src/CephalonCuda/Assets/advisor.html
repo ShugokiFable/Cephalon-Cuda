@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cephalon Cuda — Advisor</title>
+<style>
+  :root {
+    --bg:#050806; --panel:#0b1210; --panel-alt:#101b16; --border:#1b3026;
+    --accent:#00f59a; --accent-alt:#6effe1; --accent-deep:#0e7a54; --on-accent:#07100c;
+    --text:#e6f8f0; --dim:#86a99a; --danger:#ff626d; --gold:#ffd76a;
+    --glow-strong:#00f59a66; --glow-soft:#00f59a33; --glow-faint:#00f59a1d;
+    --bubble:#0d2a1e; --scroll:#2e5c48; --motion:.18s;
+  }
+  *{box-sizing:border-box} html,body{height:100%;margin:0}
+  body{background:
+      radial-gradient(980px 560px at 4% -14%,var(--glow-soft),transparent 64%),
+      radial-gradient(760px 480px at 105% 4%,color-mix(in srgb,var(--accent-alt) 15%,transparent),transparent 68%),
+      linear-gradient(145deg,color-mix(in srgb,var(--panel) 22%,transparent),transparent 46%),var(--bg);
+    color:var(--text);font:14px/1.58 "Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+    display:flex;flex-direction:column;overflow:hidden}
+  #chat{flex:1;overflow-y:auto;padding:28px max(24px,calc((100% - 980px)/2)) 16px;scroll-behavior:smooth}
+  #chat::-webkit-scrollbar{width:9px} #chat::-webkit-scrollbar-track{background:transparent}
+  #chat::-webkit-scrollbar-thumb{background:var(--scroll);border:2px solid var(--bg);border-radius:99px}
+  .msg{position:relative;max-width:min(84%,840px);margin:0 0 18px;padding:30px 18px 16px;border-radius:18px;
+       white-space:normal;overflow-wrap:anywhere;box-shadow:0 16px 42px #0000002b;backdrop-filter:blur(14px);animation:rise var(--motion) ease-out}
+  .msg:before{position:absolute;top:9px;left:16px;font:600 9px/1 "Segoe UI",sans-serif;letter-spacing:.12em;color:var(--dim)}
+  .user{margin-left:auto;background:linear-gradient(145deg,color-mix(in srgb,var(--bubble) 88%,var(--accent)),var(--panel-alt));border:1px solid var(--accent-deep);border-radius:18px 18px 5px 18px}
+  .user:before{content:"OPERATOR";color:var(--accent)}
+  .assistant{margin-right:auto;background:linear-gradient(145deg,color-mix(in srgb,var(--panel-alt) 94%,var(--accent-alt)),var(--panel));border:1px solid var(--border);border-radius:18px 18px 18px 5px}
+  .assistant:before{content:"CEPHALON CUDA";color:var(--accent)}
+  .assistant.streaming{border-color:var(--accent);box-shadow:0 0 0 1px var(--glow-faint),0 16px 38px #00000030}
+  .note{width:max-content;max-width:90%;margin:0 auto 16px;padding:6px 12px;color:var(--dim);font:11px Consolas,monospace;text-align:center;
+        background:var(--panel);border:1px solid var(--border);border-radius:99px}
+  .error{margin-right:auto;background:#2a0e12;border-color:var(--danger);color:#ffc0c5}
+  .msg pre{background:#030806;border:1px solid var(--border);border-radius:10px;padding:13px;overflow-x:auto;font:12px/1.55 "Cascadia Mono",Consolas,monospace}
+  .msg code{background:#030806;border:1px solid var(--border);border-radius:5px;padding:2px 6px;font:12.5px "Cascadia Mono",Consolas,monospace;color:var(--accent)}
+  .msg pre code{background:none;border:0;padding:0}.msg h1,.msg h2,.msg h3{color:var(--text);font-family:"Segoe UI Semibold","Segoe UI";margin:15px 0 6px}
+  .msg h1{font-size:20px}.msg h2{font-size:17px}.msg h3{font-size:15px;color:var(--accent)}
+  .msg ul{margin:7px 0;padding-left:22px}.msg li{margin:3px 0}.msg a{color:var(--accent)}.msg strong{color:var(--text)}
+  .msg .cap-img{max-width:100%;max-height:360px;border-radius:11px;border:1px solid var(--border);margin-bottom:7px;display:block;cursor:pointer}
+  .msg .cap-label{font-size:10px;color:var(--dim);font-family:Consolas,monospace;margin-top:5px}
+  #welcome{max-width:760px;margin:8vh auto 0;text-align:center;color:var(--dim)}
+  #welcome .orb{width:82px;height:82px;margin:0 auto 22px;display:grid;place-items:center;border-radius:27px;background:linear-gradient(145deg,var(--accent-alt),var(--accent),var(--accent-deep));
+                    color:var(--on-accent);font-size:34px;box-shadow:0 0 48px var(--glow-soft),0 18px 46px #0008}
+  #welcome .logo{font:600 31px/1.1 "Segoe UI Semibold","Segoe UI";color:var(--text);margin-bottom:10px}
+  #welcome .kicker{display:inline-block;margin-bottom:12px;padding:5px 10px;border:1px solid var(--accent-deep);border-radius:99px;color:var(--accent);font:600 10px Consolas,monospace;letter-spacing:.1em;background:var(--glow-faint)}
+  #welcome .copy{max-width:610px;margin:auto;font-size:14px;line-height:1.7}
+  #welcome .signals{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:22px}
+  #welcome .signal{padding:6px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);font-size:11px;color:var(--dim)}
+  #chips{display:flex;gap:8px;overflow-x:auto;padding:10px max(24px,calc((100% - 980px)/2));scrollbar-width:none}
+  #chips::-webkit-scrollbar{display:none}.chip{flex:0 0 auto;background:var(--panel);border:1px solid var(--border);color:var(--dim);border-radius:99px;padding:7px 13px;font-size:11px;cursor:pointer;transition:all var(--motion);user-select:none}
+  .chip:hover{transform:translateY(-1px);border-color:var(--accent);color:var(--accent);background:var(--glow-faint);box-shadow:0 8px 22px #0005}
+  #inputbar{display:flex;gap:10px;margin:0 max(18px,calc((100% - 1010px)/2)) 18px;padding:10px;background:linear-gradient(145deg,color-mix(in srgb,var(--panel-alt) 96%,var(--accent-alt)),var(--panel));border:1px solid var(--border);border-radius:19px;box-shadow:0 22px 58px #0009;backdrop-filter:blur(18px)}
+  #input{flex:1;background:transparent;border:0;color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;resize:none;max-height:140px;outline:none}
+  #input::placeholder{color:var(--dim)} #inputbar:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--glow-faint),0 18px 46px #0008}
+  #send{min-width:94px;background:linear-gradient(145deg,var(--accent),var(--accent-deep));color:var(--on-accent);border:1px solid var(--accent);border-radius:11px;padding:0 18px;cursor:pointer;font:700 12px "Segoe UI Semibold","Segoe UI";letter-spacing:.05em;transition:all var(--motion)}
+  #send:hover{filter:brightness(1.08);box-shadow:0 0 22px var(--glow-soft)}#send:disabled{opacity:.34;cursor:default;box-shadow:none}
+  .typing{display:inline-flex;gap:4px}.typing span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.2s infinite}.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,70%,100%{opacity:.2;transform:translateY(0)}35%{opacity:1;transform:translateY(-2px)}}@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  @media(max-width:760px){#chat{padding:18px 14px 10px}.msg{max-width:94%}#chips{padding:8px 14px}#inputbar{margin:0 10px 10px}#send{min-width:72px}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+  <div id="chat">
+    <div id="welcome">
+      <div class="orb">◈</div>
+      <div class="kicker">LIVE TENNO INTELLIGENCE</div>
+      <div class="logo">Your Warframe command layer</div>
+      <div class="copy">Ask one question. Cuda combines your progression, current world state, inventory, Foundry, market data, official drops, and return-player context into an actionable answer.</div>
+      <div class="signals">
+        <span class="signal">Live market context</span><span class="signal">Official drop routes</span>
+        <span class="signal">Build synthesis</span><span class="signal">Purchase warnings</span>
+      </div>
+    </div>
+  </div>
+  <div id="chips">
+    <div class="chip" data-q="What should I focus on today given the current world state and my gear?">▶ What should I do today?</div>
+    <div class="chip" data-q="Which relics should I run right now for the best platinum per hour? Match them to currently active fissures.">◐ Best relics right now</div>
+    <div class="chip" data-q="Look at my tracked inventory and tell me what to sell now vs hold, with target prices.">⇄ Sell or hold?</div>
+    <div class="chip" data-q="Give me an efficient platinum farming plan for this week based on my mastery rank and current prices.">✦ Plat farming plan</div>
+    <div class="chip" data-q="I'm a returning player. Based on my context, what changed recently and what should I prioritize?">↺ Returning player</div>
+  </div>
+  <div id="inputbar">
+    <textarea id="input" rows="1" placeholder="Ask Cephalon Cuda… (Enter to send, Shift+Enter for newline)"></textarea>
+    <button id="send">SEND</button>
+  </div>
+
+<script>
+  const chat = document.getElementById('chat');
+  const input = document.getElementById('input');
+  const send = document.getElementById('send');
+  const welcome = document.getElementById('welcome');
+  let streamEl = null, streamRaw = '', busy = false;
+
+  // ---- minimal markdown (escape first, then transform) ----
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function md(src) {
+    let s = esc(src);
+    const blocks = [];
+    s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+      blocks.push('<pre><code>' + code + '</code></pre>');
+      // \uE000 sentinel: cannot occur in escaped user/model text, so placeholders never collide.
+      return '\uE000B' + (blocks.length - 1) + '\uE000';
+    });
+    s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    s = s.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+    s = s.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+    s = s.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/(^|\s)\*([^*\n]+)\*(?=\s|$|[.,])/g, '$1<em>$2</em>');
+    s = s.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    // lists
+    s = s.replace(/(^|\n)((?:[-*] .*(?:\n|$))+)/g, (m, pre, items) =>
+      pre + '<ul>' + items.trim().split('\n').map(l => '<li>' + l.replace(/^[-*] /, '') + '</li>').join('') + '</ul>');
+    s = s.replace(/\n{2,}/g, '<br><br>').replace(/\n/g, '<br>');
+    s = s.replace(/\uE000B(\d+)\uE000/g, (_, i) => blocks[+i]);
+    return s;
+  }
+
+  function addMsg(cls, html) {
+    if (welcome.parentNode) welcome.remove();
+    const el = document.createElement('div');
+    el.className = 'msg ' + cls;
+    el.innerHTML = html;
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+    return el;
+  }
+  function addNote(text) {
+    if (welcome.parentNode) welcome.remove();
+    const el = document.createElement('div');
+    el.className = 'note';
+    el.textContent = text;
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+  }
+  function setBusy(v) {
+    busy = v;
+    send.disabled = v;
+    input.disabled = v;
+  }
+
+  function submit(text) {
+    text = (text || '').trim();
+    if (!text || busy) return;
+    addMsg('user', md(text));
+    window.chrome.webview.postMessage(JSON.stringify({ type: 'user', text }));
+    input.value = '';
+    autosize();
+  }
+
+  send.onclick = () => submit(input.value);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(input.value); }
+  });
+  function autosize() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  }
+  input.addEventListener('input', autosize);
+  document.querySelectorAll('.chip').forEach(c => c.onclick = () => submit(c.dataset.q));
+
+  // ---- host -> page protocol ----
+  window.chrome.webview.addEventListener('message', e => {
+    let m = e.data;
+    if (typeof m === 'string') { try { m = JSON.parse(m); } catch { return; } }
+    switch (m.type) {
+      case 'prefill':
+        input.value = m.text || ''; autosize(); input.focus();
+        break;
+      case 'history':
+        for (const h of m.messages || []) {
+          if (h.role === 'user') addMsg('user', md(h.content));
+          else if (h.role === 'assistant') addMsg('assistant', md(h.content));
+        }
+        break;
+      case 'userImage':
+        {
+          if (welcome.parentNode) welcome.remove();
+          const el = document.createElement('div');
+          el.className = 'msg user';
+          const lbl = m.label || 'Screenshot';
+          el.innerHTML = '<img class="cap-img" src="data:image/png;base64,' + m.thumb + '" alt="' + esc(lbl) + '"/>'
+                       + '<div class="cap-label">' + esc(lbl) + '</div>';
+          el.querySelector('.cap-img').onclick = function() {
+            const w = window.open('', '_blank');
+            w.document.write('<html><head><title>' + esc(lbl) + '</title><style>body{margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh}</style></head>'
+              + '<body><img src="' + this.src + '" style="max-width:100%;max-height:100%"/></body></html>');
+          };
+          chat.appendChild(el);
+          chat.scrollTop = chat.scrollHeight;
+        }
+        break;
+      case 'userNote':
+        addNote(m.text);
+        break;
+      case 'start':
+        setBusy(true);
+        streamRaw = '';
+        streamEl = addMsg('assistant streaming',
+          '<div class="typing"><span></span><span></span><span></span></div>');
+        break;
+      case 'delta':
+        if (!streamEl) break;
+        streamRaw += m.text;
+        streamEl.innerHTML = md(streamRaw);
+        chat.scrollTop = chat.scrollHeight;
+        break;
+      case 'done':
+        if (streamEl) { streamEl.classList.remove('streaming'); streamEl.innerHTML = md(streamRaw); }
+        streamEl = null;
+        setBusy(false);
+        input.focus();
+        break;
+      case 'error':
+        if (streamEl) { streamEl.remove(); streamEl = null; }
+        addMsg('assistant error', md('**Transmission failed.** ' + m.text));
+        setBusy(false);
+        break;
+      case 'clear':
+        chat.innerHTML = '';
+        chat.appendChild(welcome);
+        break;
+      case 'remoteMessage':
+        // Message sent from the overlay chat (or another source) — display it here.
+        if (m.role === 'user') addMsg('user', md(m.content));
+        else if (m.role === 'assistant') addMsg('assistant', md(m.content));
+        break;
+      case 'theme':
+        // Host pushes the active palette as CSS variables (keys match var names minus '--').
+        for (const [k, v] of Object.entries(m.vars || {}))
+          document.documentElement.style.setProperty('--' + k, v);
+        break;
+    }
+  });
+
+  window.chrome.webview.postMessage(JSON.stringify({ type: 'ready' }));
+  input.focus();
+</script>
+</body>
+</html>

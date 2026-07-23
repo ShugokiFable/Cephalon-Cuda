@@ -1,0 +1,58 @@
+<UserControl x:Class="CephalonCuda.Views.OverlayControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="{DynamicResource Metric.PageMargin}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.ColumnSpan="2" Margin="0,0,0,12">
+                <TextBlock Text="IN-GAME COMPANION LAYER" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+                <TextBlock Text="Overlay &amp; OCR" Style="{StaticResource H1}" Margin="0"/>
+                <TextBlock Text="Control the HUD, visual scanning, reward recognition, and hands-free data capture." Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="0,0,10,0">
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="OVERLAY" Style="{StaticResource H2}"/>
+                        <CheckBox x:Name="AutoScanBox" Content="Auto-scan relic rewards when EE.log detects the selection screen"
+                                  Checked="OnAutoScanChanged" Unchecked="OnAutoScanChanged" Margin="0,4,0,10"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="ToggleButton" Content="▣ Launch overlay" Style="{StaticResource AccentButton}" Click="OnToggleOverlay"/>
+                            <Button Content="◐ Test scan now" Click="OnTestScan" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Dim}" Margin="0,10,0,0" TextWrapping="Wrap" Text="Global hotkeys:  F8 = Immersive Mode (whole app docked over the game — advisor chat included) · F10 = scan reward screen · F11 = AI screen analysis · F7 = make the HUD clickable/scrollable · F9 = show/hide HUD. The HUD is click-through by default and follows the Warframe window."/>
+                        <TextBlock Foreground="{DynamicResource Brush.Warn}" Margin="0,8,0,0" TextWrapping="Wrap" Text="⚠ Warframe must run in Borderless or Windowed mode — exclusive fullscreen hides overlays and blocks capture."/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="ENGINE STATUS" Style="{StaticResource H2}"/>
+                        <TextBlock x:Name="EngineStatus" FontFamily="Consolas" TextWrapping="Wrap"/>
+                        <TextBlock Style="{StaticResource Dim}" Margin="0,10,0,0" TextWrapping="Wrap" Text="OCR uses the built-in Windows OCR engine by default. To use Tesseract instead, place tesseract53.dll and a tessdata folder (eng.traineddata) inside a 'tesseract' folder next to CephalonCuda.exe."/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="LAST REWARD SCAN" Style="{StaticResource H2}"/>
+                    <ListBox x:Name="ScanResults" MinHeight="120"/>
+                    <TextBlock x:Name="ScanStatus" Style="{StaticResource Dim}" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                    <Separator/>
+                    <TextBlock Text="LIVE EE.LOG EVENTS" Style="{StaticResource H2}"/>
+                    <ListBox x:Name="LogEvents" MinHeight="160" MaxHeight="260" FontFamily="Consolas" FontSize="12"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

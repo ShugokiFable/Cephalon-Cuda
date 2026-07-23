@@ -1,0 +1,13 @@
+<Application x:Class="CephalonCuda.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnMainWindowClose">
+    <!--
+        Theme brushes are registered programmatically in the App constructor (guaranteed mutable).
+        Verv.xaml (styles only) is merged in OnStartup after brushes exist, so StaticResource
+        references in styles resolve to the code-created mutable brushes.
+    -->
+    <Application.Resources>
+        <ResourceDictionary/>
+    </Application.Resources>
+</Application>

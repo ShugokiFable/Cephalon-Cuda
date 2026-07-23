@@ -1,0 +1,251 @@
+<Window x:Class="CephalonCuda.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Cephalon Cuda 2.2 · Tenno Intelligence OS"
+        Width="1500" Height="940" MinWidth="1120" MinHeight="740"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" ResizeMode="CanResize"
+        Background="{DynamicResource Brush.WindowBackdrop}"
+        TextElement.Foreground="{DynamicResource Brush.Text}"
+        FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="13"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="52"
+                            ResizeBorderThickness="7"
+                            GlassFrameThickness="0"
+                            CornerRadius="0"
+                            UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Grid x:Name="RootGrid" Background="{DynamicResource Brush.WindowBackdrop}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{DynamicResource Metric.TitleBarHeight}"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="{DynamicResource Metric.StatusBarHeight}"/>
+        </Grid.RowDefinitions>
+
+        <!-- Atmospheric backdrop, intentionally subtle and fully theme-aware. -->
+        <Canvas Grid.RowSpan="4" IsHitTestVisible="False" ClipToBounds="True" Opacity="0.62">
+            <Ellipse Width="620" Height="620" Canvas.Left="-260" Canvas.Top="-340"
+                     Fill="{DynamicResource Brush.AccentFaint}"/>
+            <Ellipse Width="480" Height="480" Canvas.Right="-210" Canvas.Top="100"
+                     Fill="{DynamicResource Brush.AccentFaint}"/>
+            <Rectangle Width="920" Height="1" Canvas.Left="360" Canvas.Top="52"
+                       Fill="{DynamicResource Brush.Divider}" Opacity="0.5"/>
+        </Canvas>
+
+        <!-- Custom application chrome -->
+        <Border Grid.Row="0" Background="{DynamicResource Brush.SurfaceGlass}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1">
+            <Grid Margin="14,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Width="32" Height="32" CornerRadius="10"
+                        Background="{DynamicResource Brush.AccentGradient}"
+                        BorderBrush="{DynamicResource Brush.AccentMuted}" BorderThickness="1"
+                        VerticalAlignment="Center" Effect="{DynamicResource Fx.GlowSoft}">
+                    <TextBlock Text="◈" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource Brush.OnAccent}" FontSize="16"/>
+                </Border>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,20,0">
+                    <TextBlock Text="CEPHALON CUDA" FontFamily="Segoe UI Variable Text Semibold, Segoe UI Semibold"
+                               FontSize="12.5" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="TaglineText" Text="// VERV PROTOCOL" Style="{StaticResource Eyebrow}"
+                               FontFamily="Cascadia Mono, Consolas" FontSize="8.5"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="1" Height="24" Background="{DynamicResource Brush.Divider}" Margin="0,0,16,0"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="CurrentPageTitleText" Text="Tenno Path"
+                                   FontFamily="Segoe UI Variable Text Semibold, Segoe UI Semibold"
+                                   FontSize="12" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="CurrentPageSubtitleText" Text="Progression, return protocol, and next-best actions"
+                                   Style="{StaticResource Muted}" FontSize="9.5"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="3" Style="{StaticResource Pill}" Margin="12,0,12,0" VerticalAlignment="Center"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="●" Foreground="{DynamicResource Brush.Success}" FontSize="8" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="LOCAL-FIRST" Style="{StaticResource Eyebrow}" FontSize="8.5"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right"
+                            shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Content="&#xE921;" Style="{StaticResource WindowButton}" Click="OnMinimizeWindow" ToolTip="Minimize"/>
+                    <Button x:Name="MaximizeButton" Content="&#xE922;" Style="{StaticResource WindowButton}" Click="OnMaximizeWindow" ToolTip="Maximize or restore"/>
+                    <Button Content="&#xE8BB;" Style="{StaticResource CloseWindowButton}" Click="OnCloseWindow" ToolTip="Close"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Immersive mode control strip -->
+        <Border x:Name="ImmersiveStrip" Grid.Row="1" Visibility="Collapsed"
+                Background="{DynamicResource Brush.SurfaceGlassStrong}"
+                BorderBrush="{DynamicResource Brush.Accent}" BorderThickness="0,0,0,1"
+                Padding="14,7" Cursor="SizeAll" MouseLeftButtonDown="OnImmersiveStripDrag">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="◧" Style="{StaticResource IconButton}" Click="OnImmersiveDockLeft" ToolTip="Dock left" Margin="0,0,6,0"/>
+                    <Button Content="◨" Style="{StaticResource IconButton}" Click="OnImmersiveDockRight" ToolTip="Dock right" Margin="0,0,6,0"/>
+                    <Button Content="EXIT IMMERSIVE" Click="OnImmersiveExit" Style="{StaticResource DangerButton}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource Pill}" Padding="8,3" Margin="0,0,10,0">
+                        <TextBlock Text="F8" FontFamily="Cascadia Mono, Consolas" FontSize="9" Foreground="{DynamicResource Brush.Accent}"/>
+                    </Border>
+                    <TextBlock VerticalAlignment="Center" FontFamily="Segoe UI Variable Text Semibold, Segoe UI Semibold"
+                               FontSize="11" Text="IMMERSIVE COMMAND DECK · drag this strip to reposition"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Main application body -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{DynamicResource Metric.NavWidth}"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Command rail -->
+            <Border Grid.Column="0" Margin="14,14,8,12"
+                    Background="{DynamicResource Brush.SidebarGradient}"
+                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                    CornerRadius="{DynamicResource Corner.Shell}" Effect="{DynamicResource Fx.Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Margin="18,20,18,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Width="40" Height="40" CornerRadius="13"
+                                    Background="{DynamicResource Brush.AccentGradient}"
+                                    BorderBrush="{DynamicResource Brush.AccentMuted}" BorderThickness="1">
+                                <TextBlock Text="◈" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           FontSize="20" Foreground="{DynamicResource Brush.OnAccent}"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                <TextBlock Text="TENNO INTELLIGENCE OS" Style="{StaticResource Eyebrow}" FontSize="8.5"/>
+                                <TextBlock Text="Command deck" FontFamily="Segoe UI Variable Display Semibold, Segoe UI Semibold"
+                                           FontSize="17" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Style="{StaticResource Surface}" Margin="0,16,0,0" Padding="12,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="RETURN PROTOCOL" Style="{StaticResource Eyebrow}" FontSize="8.5"/>
+                                    <TextBlock Text="Ready for your next move" FontSize="11.5" FontWeight="SemiBold" Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="10"
+                                        Background="{DynamicResource Brush.AccentSoft}" BorderBrush="{DynamicResource Brush.AccentMuted}" BorderThickness="1">
+                                    <TextBlock Text="↺" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource Brush.Accent}" FontSize="15"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="NavPanel" Margin="0,0,0,10">
+                            <TextBlock Text="COMMAND CENTER" Style="{StaticResource NavGroupLabel}"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="path" IsChecked="True" Checked="OnNavChecked" Content="◉   Tenno Path"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="dashboard" Checked="OnNavChecked" Content="◈   Live Overview"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="advisor" Checked="OnNavChecked" Content="✦   AI Advisor"/>
+
+                            <TextBlock Text="ARSENAL &amp; ECONOMY" Style="{StaticResource NavGroupLabel}"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="inventory" Checked="OnNavChecked" Content="▤   Inventory"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="relics" Checked="OnNavChecked" Content="◐   Relic Planner"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="market" Checked="OnNavChecked" Content="⇄   Market &amp; Trading"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="mastery" Checked="OnNavChecked" Content="★   Mastery Helper"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="foundry" Checked="OnNavChecked" Content="⚒   Foundry"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="rivens" Checked="OnNavChecked" Content="♆   Riven Assistant"/>
+
+                            <TextBlock Text="SYSTEM" Style="{StaticResource NavGroupLabel}"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="intel" Checked="OnNavChecked" Content="⌁   Live Data &amp; Intel"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="overlay" Checked="OnNavChecked" Content="▣   Overlay &amp; OCR"/>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Tag="settings" Checked="OnNavChecked" Content="⚙   Settings"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2" Margin="12,8,12,14">
+                        <Border Style="{StaticResource Surface}" Padding="10" Margin="0,0,0,9">
+                            <StackPanel>
+                                <Button x:Name="ImmersiveToggleButton" Content="⿻  Immersive mode  ·  F8"
+                                        Style="{StaticResource GhostButton}" Click="OnToggleImmersive"
+                                        HorizontalContentAlignment="Left" Margin="0,0,0,4"
+                                        ToolTip="Dock Cephalon Cuda over Warframe without alt-tabbing"/>
+                                <Button x:Name="OverlayToggleButton" Content="▣  Launch HUD overlay"
+                                        Style="{StaticResource AccentButton}" Click="OnToggleOverlay"
+                                        HorizontalContentAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Text="Local-first · encrypted secrets · source-stamped intel"
+                                   Style="{StaticResource Muted}" FontSize="9" TextAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Workspace frame -->
+            <Border Grid.Column="1" Margin="8,14,14,12"
+                    Background="{DynamicResource Brush.SurfaceGlass}"
+                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                    CornerRadius="{DynamicResource Corner.Shell}" Effect="{DynamicResource Fx.Card}"
+                    ClipToBounds="True">
+                <Grid>
+                    <Border Height="190" VerticalAlignment="Top" Background="{DynamicResource Brush.HeaderGradient}" IsHitTestVisible="False"/>
+                    <ContentControl x:Name="ContentHost"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status telemetry -->
+        <Border Grid.Row="3" Background="{DynamicResource Brush.StatusGradient}"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0">
+            <Grid Margin="14,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock x:Name="GameDot" Text="●" Foreground="{DynamicResource Brush.StatusIdle}" Margin="0,0,7,0" FontSize="9"/>
+                    <TextBlock x:Name="GameStatus" Text="Warframe: not detected" Style="{StaticResource Dim}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock x:Name="LogDot" Text="●" Foreground="{DynamicResource Brush.StatusIdle}" Margin="0,0,7,0" FontSize="9"/>
+                    <TextBlock x:Name="LogStatus" Text="EE.log: —" Style="{StaticResource Dim}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock x:Name="WorldDot" Text="●" Foreground="{DynamicResource Brush.StatusIdle}" Margin="0,0,7,0" FontSize="9"/>
+                    <TextBlock x:Name="WorldStatus" Text="World state: —" Style="{StaticResource Dim}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock x:Name="IntelDot" Text="●" Foreground="{DynamicResource Brush.StatusIdle}" Margin="0,0,7,0" FontSize="9"/>
+                    <TextBlock x:Name="IntelStatus" Text="Intel: loading…" Style="{StaticResource Dim}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="AiDot" Text="●" Foreground="{DynamicResource Brush.StatusIdle}" Margin="0,0,7,0" FontSize="9"/>
+                    <TextBlock x:Name="AiStatus" Text="AI: no key" Style="{StaticResource Dim}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

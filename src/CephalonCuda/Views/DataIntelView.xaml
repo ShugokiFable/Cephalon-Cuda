@@ -1,0 +1,128 @@
+<UserControl x:Class="CephalonCuda.Views.DataIntelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Margin="{DynamicResource Metric.PageMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource HeroCard}">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <Border Style="{StaticResource Pill}" HorizontalAlignment="Left" Margin="0,0,0,9">
+                        <TextBlock Text="SOURCE-VERIFIED RETRIEVAL" Style="{StaticResource Eyebrow}"/>
+                    </Border>
+                    <TextBlock Text="Live Data &amp; Intel" Style="{StaticResource H1}" Margin="0"/>
+                    <TextBlock Text="Official item and drop data, live market caches, local retrieval, and permission-safe community build intelligence."
+                               Style="{StaticResource Dim}" TextWrapping="Wrap" MaxWidth="760" Margin="0,5,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="↻  Refresh live data" Style="{StaticResource AccentButton}" Click="OnRefreshAll"/>
+                    <Button Content="Import JSON" Style="{StaticResource SmallButton}" Margin="8,0,0,0" Click="OnImportCommunity"/>
+                    <Button Content="Export template" Style="{StaticResource GhostButton}" Margin="3,0,0,0" Click="OnExportTemplate"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,12,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ItemsControl x:Name="SourcesList">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource Brush.CardGradient}" BorderBrush="{DynamicResource Brush.Border}"
+                                    BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,9,8" MinWidth="215">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                        <TextBlock Text="{Binding StateDisplay}" FontFamily="Consolas" FontSize="11"
+                                                   Foreground="{DynamicResource Brush.Accent}"/>
+                                        <TextBlock Text="  ·  " Style="{StaticResource Dim}"/>
+                                        <TextBlock Text="{Binding CountDisplay}" FontFamily="Consolas"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding LastSyncLabel}" Style="{StaticResource Dim}"/>
+                                    <TextBlock Text="{Binding Error}" Foreground="{DynamicResource Brush.Warn}" TextWrapping="Wrap"
+                                               MaxWidth="280" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <Button Content="Open Overframe tier lists" Click="OnOpenOverframeTiers"/>
+                    <Button Content="Open Overframe builds" Click="OnOpenOverframeBuilds" Margin="0,6,0,0"/>
+                    <Button Content="Clear community imports" Click="OnClearCommunity" Margin="0,6,0,0"/>
+                </StackPanel>
+                <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="LICENSED JSON FEED" FontFamily="Consolas" FontSize="11"
+                               Foreground="{DynamicResource Brush.Accent}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox x:Name="FeedUrlBox" Grid.Column="1" VerticalContentAlignment="Center"
+                             ToolTip="Optional HTTPS JSON feed using the exported schema. No scraper is bundled."/>
+                    <Button Grid.Column="2" Content="SAVE" Click="OnSaveFeed" Margin="8,0,0,0"/>
+                    <Button Grid.Column="3" Content="REFRESH FEED" Click="OnRefreshFeed" Margin="8,0,0,0"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,0,0,10">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="SEARCH DATABASE" Style="{StaticResource AccentButton}"
+                        Click="OnSearch" Margin="8,0,0,0"/>
+                <TextBox x:Name="SearchBox" KeyDown="OnSearchKeyDown"
+                         ToolTip="Try: Saryn spores, Torid incarnon, slash melee, arcane energize, Mesa build"
+                         VerticalContentAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <DataGrid x:Name="ResultsGrid" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" SelectionChanged="OnSelectionChanged"
+                  CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="SOURCE" Binding="{Binding SourceDisplay}" Width="125"/>
+                <DataGridTextColumn Header="NAME" Binding="{Binding Name}" Width="230"/>
+                <DataGridTextColumn Header="CATEGORY" Binding="{Binding Category}" Width="155"/>
+                <DataGridTextColumn Header="INTEL" Binding="{Binding Summary}" Width="*"/>
+                <DataGridTextColumn Header="FRESHNESS" Binding="{Binding Freshness}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="4" Style="{StaticResource Card}" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock x:Name="SelectedTitle" Text="Select a result for details." FontWeight="SemiBold"/>
+                    <TextBlock x:Name="SelectedSummary" Style="{StaticResource Dim}" TextWrapping="Wrap" MaxHeight="92"/>
+                    <TextBlock x:Name="DataStatus" Style="{StaticResource Dim}" Margin="0,5,0,0"
+                               Text="The AI advisor uses the same indexed retrieval automatically."/>
+                </StackPanel>
+                <Button x:Name="OpenSourceButton" Grid.Column="1" Content="OPEN SOURCE" IsEnabled="False"
+                        Click="OnOpenSelectedSource" Margin="12,0,0,0" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

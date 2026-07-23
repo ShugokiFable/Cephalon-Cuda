@@ -1,0 +1,51 @@
+name: Windows verified release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore src/CephalonCuda/CephalonCuda.csproj -r win-x64 --nologo
+      - name: Build with warnings as errors
+        run: dotnet build src/CephalonCuda/CephalonCuda.csproj -c Release -r win-x64 --no-restore --nologo -p:TreatWarningsAsErrors=true
+      - name: Publish self-contained executable
+        run: >-
+          dotnet publish src/CephalonCuda/CephalonCuda.csproj -c Release -r win-x64
+          --self-contained true --no-restore --nologo
+          -p:TreatWarningsAsErrors=true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:DebugType=embedded
+          -o publish
+      - name: UI smoke test
+        shell: cmd
+        run: publish\CephalonCuda.exe --smoke
+      - name: Live data verification
+        shell: cmd
+        run: publish\CephalonCuda.exe --verify-data
+      - name: Stage Nexus artifact
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifact | Out-Null
+          Copy-Item publish/CephalonCuda.exe artifact/
+          Copy-Item NEXUS_README.txt,NEXUS_DESCRIPTION_BBCODE.txt,CHANGELOG.md,PRIVACY_AND_DATA.md,THIRD_PARTY_NOTICES.md artifact/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Cephalon-Cuda-2.2-Nexus-Release
+          path: artifact
+          if-no-files-found: error

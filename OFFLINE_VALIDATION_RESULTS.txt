@@ -1,0 +1,11 @@
+Cephalon Cuda 2.2 · R3.1 offline validation
+
+PASS: 17 XAML files and 170 event bindings
+PASS: 47 C# files plus known compiler regressions
+PASS: SQLite v8 creation and archived V1.8/V2.1 migrations
+PASS: 56 live theme tokens and eight theme presets
+PASS: GridLength typing for dynamic row/column geometry
+PASS: smoke-mode dispatcher exceptions terminate with exit code 2
+PASS: source cleanliness, assets, workflow, and feature contracts
+
+Authoritative final gate: BUILD_V2.2.bat on Windows.

@@ -1,0 +1,176 @@
+<UserControl x:Class="CephalonCuda.Views.MarketView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Margin="{DynamicResource Metric.PageMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,12">
+            <TextBlock Text="MARKET INTELLIGENCE" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+            <TextBlock Text="Market &amp; Trading" Style="{StaticResource H1}" Margin="0"/>
+            <TextBlock Text="Live order books, price history, personal listings, Ducat value, and a practical trading ledger."
+                       Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: item lookup -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="ITEM LOOKUP" Style="{StaticResource H2}"/>
+                            <TextBox x:Name="SearchBox" TextChanged="OnSearchChanged" ToolTip="Search any tradable item…"/>
+                            <ListBox x:Name="ResultList" MaxHeight="150" Margin="0,6,0,0" SelectionChanged="OnItemSelected"/>
+                            <TextBlock x:Name="ItemMeta" Style="{StaticResource Dim}" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                            <StackPanel x:Name="RankFilterPanel" Orientation="Horizontal" Margin="0,6,0,0" Visibility="Collapsed">
+                                <TextBlock Text="RANK:" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource Dim}"/>
+                                <ComboBox x:Name="RankFilterCombo" Width="100" SelectionChanged="OnRankFilterChanged"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock x:Name="ChartTitle" Text="90-DAY MEDIAN PRICE" Style="{StaticResource H2}"/>
+                            <Border Background="{DynamicResource Brush.Input}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="9" Height="140" ClipToBounds="True">
+                                <Canvas x:Name="ChartCanvas" SizeChanged="OnChartSizeChanged"/>
+                            </Border>
+                            <TextBlock x:Name="ChartInfo" Style="{StaticResource Dim}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource Card}" Margin="0,0,5,0">
+                            <StackPanel>
+                                <TextBlock x:Name="SellHeader" Text="SELL ORDERS" Style="{StaticResource H2}"/>
+                                <DataGrid x:Name="SellGrid" MaxHeight="420">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="PLAT" Binding="{Binding Platinum}" Width="60"/>
+                                        <DataGridTextColumn x:Name="SellRankCol" Header="RANK" Binding="{Binding RankDisplay}" Width="55"/>
+                                        <DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="50"/>
+                                        <DataGridTextColumn Header="SELLER" Binding="{Binding UserName}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource Card}" Margin="5,0,0,0">
+                            <StackPanel>
+                                <TextBlock x:Name="BuyHeader" Text="BUY ORDERS" Style="{StaticResource H2}"/>
+                                <DataGrid x:Name="BuyGrid" MaxHeight="420">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="PLAT" Binding="{Binding Platinum}" Width="60"/>
+                                        <DataGridTextColumn x:Name="BuyRankCol" Header="RANK" Binding="{Binding RankDisplay}" Width="55"/>
+                                        <DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="50"/>
+                                        <DataGridTextColumn Header="BUYER" Binding="{Binding UserName}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Right: my orders + platinum ledger -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="MY WARFRAME.MARKET ORDERS" Style="{StaticResource H2}"/>
+                                <Button Content="⟳ Sync" Click="OnSyncOrders" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+                            </DockPanel>
+                            <TextBlock x:Name="OrdersStatus" Style="{StaticResource Dim}" Margin="0,0,0,6" TextWrapping="Wrap"
+                                       Text="Link your account in Settings, then Sync to pull your live listings."/>
+                                <DataGrid x:Name="MyOrdersGrid" MaxHeight="240">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="DIR" Binding="{Binding Direction}" Width="50"/>
+                                    <DataGridTextColumn Header="ITEM" Binding="{Binding ItemName}" Width="*"/>
+                                    <DataGridTextColumn Header="RANK" Binding="{Binding RankDisplay}" Width="50"/>
+                                    <DataGridTextColumn Header="MINE" Binding="{Binding Platinum}" Width="55"/>
+                                    <DataGridTextColumn Header="MKT" Binding="{Binding MarketLowDisplay}" Width="55"/>
+                                    <DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="45"/>
+                                    <DataGridTextColumn Header="" Binding="{Binding VisibleDisplay}" Width="55"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Style="{StaticResource Card}" Margin="0,0,10,0" MinWidth="120">
+                            <StackPanel>
+                                <TextBlock Text="PLAT IN" Style="{StaticResource Dim}"/>
+                                <TextBlock x:Name="PlatInText" Text="0" FontFamily="Consolas" FontSize="20"
+                                           Foreground="{DynamicResource Brush.Accent}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Margin="0,0,10,0" MinWidth="120">
+                            <StackPanel>
+                                <TextBlock Text="PLAT OUT" Style="{StaticResource Dim}"/>
+                                <TextBlock x:Name="PlatOutText" Text="0" FontFamily="Consolas" FontSize="20"
+                                           Foreground="{DynamicResource Brush.Danger}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" MinWidth="120">
+                            <StackPanel>
+                                <TextBlock Text="NET" Style="{StaticResource Dim}"/>
+                                <TextBlock x:Name="PlatNetText" Text="0" FontFamily="Consolas" FontSize="20"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="LOG A TRADE" Style="{StaticResource H2}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox x:Name="TradeDirection" Width="80" SelectedIndex="0">
+                                    <ComboBoxItem Content="SELL"/>
+                                    <ComboBoxItem Content="BUY"/>
+                                </ComboBox>
+                                <TextBox x:Name="TradeItem" Width="220" Margin="8,0,0,0" ToolTip="Item traded"/>
+                                <TextBox x:Name="TradeQty" Width="50" Text="1" Margin="8,0,0,0"/>
+                                <TextBox x:Name="TradePlat" Width="70" Margin="8,0,0,0" ToolTip="Platinum"/>
+                                <Button Content="+ Log" Style="{StaticResource AccentButton}" Margin="8,0,0,0" Click="OnAddTrade"/>
+                            </StackPanel>
+                            <TextBlock x:Name="TradeStatus" Style="{StaticResource Dim}" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="TRADE HISTORY" Style="{StaticResource H2}"/>
+                            <DataGrid x:Name="TradeGrid" MaxHeight="420">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="DATE" Binding="{Binding Date, StringFormat={}{0:MM-dd HH:mm}}" Width="100"/>
+                                    <DataGridTextColumn Header="DIR" Binding="{Binding Direction}" Width="55"/>
+                                    <DataGridTextColumn Header="ITEM" Binding="{Binding ItemName}" Width="*"/>
+                                    <DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="50"/>
+                                    <DataGridTextColumn Header="PLAT" Binding="{Binding SignedPlat}" Width="60"/>
+                                    <DataGridTemplateColumn Width="50">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="✕" Style="{StaticResource DangerButton}" Padding="6,2"
+                                                        Click="OnDeleteTrade" Tag="{Binding Id}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

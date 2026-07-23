@@ -1,0 +1,9 @@
+Cephalon Cuda offline release validation
+[OK]   XAML: 17 files, 170 event bindings
+[OK]   C#: 47 files structurally scanned plus Windows compiler regressions
+[OK]   SQLite: fresh v8 schema plus archived V1.8 and V2.1 migrations passed
+[OK]   Assets, secrets, workflow and source-tree cleanliness checked
+[OK]   Return Protocol, official drops, build synthesis and automation contracts checked
+[OK]   Theme engine: 56 live resource tokens, eight presets, runtime propagation and geometry-type smoke
+[OK]   Project metadata checked
+Result: 0 failure(s)

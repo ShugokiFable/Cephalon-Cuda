@@ -1,0 +1,186 @@
+<Window x:Class="CephalonCuda.Views.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cephalon Cuda Overlay"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False" ShowActivated="False"
+        ResizeMode="NoResize" Left="0" Top="0" Width="1280" Height="720"
+        TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Window.Resources>
+        <!-- Thin, semi-transparent scrollbar for overlay panels -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="3"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Visibility="Collapsed"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border CornerRadius="2" Background="{DynamicResource Brush.AccentOverlay}"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Visibility="Collapsed"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <!-- Relic reward value panel (top center) -->
+        <Border x:Name="RewardPanel" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="0,40,0,0" Background="{DynamicResource Brush.OverlayStrong}" BorderBrush="{DynamicResource Brush.Accent}"
+                BorderThickness="1" CornerRadius="8" Padding="10" Effect="{DynamicResource Fx.GlowSoft}">
+            <StackPanel>
+                <TextBlock x:Name="RewardHeader" Text="◈ RELIC REWARD VALUES" FontFamily="Consolas" FontSize="12"
+                           Foreground="{DynamicResource Brush.Accent}" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <ItemsControl x:Name="RewardItems">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="4,0" Padding="12,8" CornerRadius="6" MinWidth="150"
+                                    Background="{DynamicResource Brush.Panel}" BorderThickness="1"
+                                    BorderBrush="{DynamicResource Brush.Border}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding MatchedName}" FontSize="12" TextWrapping="Wrap" MaxWidth="170"
+                                               Foreground="{DynamicResource Brush.Text}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                        <TextBlock Text="{Binding PlatDisplay}" FontFamily="Consolas" FontSize="18" FontWeight="Bold"
+                                                   Foreground="{DynamicResource Brush.Accent}"/>
+                                        <TextBlock Text="  " />
+                                        <TextBlock Text="{Binding DucatDisplay}" FontFamily="Consolas" FontSize="13"
+                                                   Foreground="{DynamicResource Brush.Gold}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="BestTag" Text="◄ BEST" FontFamily="Consolas" FontSize="10"
+                                               Foreground="{DynamicResource Brush.Gold}" HorizontalAlignment="Center"
+                                               Visibility="{Binding BestVisibility}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!-- AI screen analysis panel (bottom-right, collapsed by default) -->
+        <Border x:Name="AnalysisPanel" Visibility="Collapsed" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Margin="0,0,14,14" Width="360" Height="640" Background="{DynamicResource Brush.OverlayMedium}"
+                BorderBrush="{DynamicResource Brush.Accent}" BorderThickness="1" CornerRadius="8" Padding="12"
+                Cursor="SizeAll">
+            <Border.RenderTransform><TranslateTransform x:Name="AnalysisTransform"/></Border.RenderTransform>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                    <TextBlock Text="◈ SCREEN ANALYSIS" FontFamily="Consolas" FontSize="12"
+                               Foreground="{DynamicResource Brush.Accent}" VerticalAlignment="Center"/>
+                    <Button x:Name="AnalysisCloseBtn" Content="✕" Margin="8,0,0,0" FontSize="12"
+                            Foreground="{DynamicResource Brush.TextDim}" Background="Transparent" BorderThickness="0"
+                            Cursor="Hand" Click="OnAnalysisClose" HorizontalAlignment="Right"/>
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock x:Name="AnalysisText" FontFamily="Consolas" FontSize="11"
+                               Foreground="{DynamicResource Brush.Text}" TextWrapping="Wrap"
+                               LineHeight="16"/>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- Scan feedback toast -->
+        <Border x:Name="Toast" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="0,10,0,0" Background="{DynamicResource Brush.OverlayStrong}" BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="1" CornerRadius="6" Padding="12,6">
+            <TextBlock x:Name="ToastText" FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource Brush.Text}"/>
+        </Border>
+
+        <!-- Interactive mode banner (shown when F7 toggles mouse-through off) -->
+        <Border x:Name="InteractiveBanner" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="0,8,0,0" Background="{DynamicResource Brush.SelectionGlow}" BorderBrush="{DynamicResource Brush.Accent}" BorderThickness="1"
+                CornerRadius="6" Padding="14,6" Cursor="SizeAll">
+            <Border.RenderTransform><TranslateTransform x:Name="BannerTransform"/></Border.RenderTransform>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource Brush.Accent}" VerticalAlignment="Center"
+                           Text="🖱 HUD INTERACTIVE — scroll/click the panels · F7 returns to click-through"/>
+                <Button x:Name="ChatToggleBtn" Content="💬 Chat" Padding="10,3" Margin="14,0,0,0"
+                        FontFamily="Consolas" FontSize="11" Click="OnChatToggle"
+                        ToolTip="Talk to the AI advisor directly from the overlay (F12)"/>
+            </StackPanel>
+        </Border>
+
+        <!-- AI advisor chat panel (toggled from the interactive banner or F12) -->
+        <!-- 9:16 aspect ratio (360×640) for a tall, narrow chat that doesn't feel like a box -->
+        <Border x:Name="ChatPanel" Visibility="Collapsed" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Margin="0,0,14,14" Width="360" Height="640" Background="{DynamicResource Brush.OverlayStrong}"
+                BorderBrush="{DynamicResource Brush.Accent}" BorderThickness="1" CornerRadius="8" Cursor="SizeAll">
+            <Border.RenderTransform><TranslateTransform x:Name="ChatTransform"/></Border.RenderTransform>
+            <DockPanel>
+                <Border DockPanel.Dock="Top" Background="{DynamicResource Brush.PanelAlt}"
+                        BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1"
+                        CornerRadius="8,8,0,0" Padding="10,6">
+                    <DockPanel>
+                        <Button x:Name="ChatCloseBtn" Content="✕" DockPanel.Dock="Right"
+                                Foreground="{DynamicResource Brush.TextDim}" Background="Transparent"
+                                BorderThickness="0" Cursor="Hand" FontSize="12" Padding="4,0"
+                                Click="OnChatClose"/>
+                        <TextBlock Text="💬 AI ADVISOR — OVERLAY CHAT" FontFamily="Consolas" FontSize="12"
+                                   Foreground="{DynamicResource Brush.Accent}" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </Border>
+                <Border DockPanel.Dock="Bottom" Background="{DynamicResource Brush.PanelAlt}"
+                        BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0"
+                        CornerRadius="0,0,8,8" Padding="8,6">
+                    <DockPanel>
+                        <Button x:Name="ChatSendBtn" Content="▶ SEND" DockPanel.Dock="Right"
+                                Style="{StaticResource AccentButton}" Click="OnChatSend"
+                                Padding="12,4" Margin="6,0,0,0" FontFamily="Consolas" FontSize="11"/>
+                        <TextBox x:Name="ChatInputBox" KeyDown="OnChatInputKeyDown"
+                                 VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="12"
+                                 ToolTip="Type a message — Enter to send, Shift+Enter for newline"/>
+                    </DockPanel>
+                </Border>
+                <ScrollViewer x:Name="ChatScroll" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled" Padding="6,4">
+                    <ItemsControl x:Name="ChatMessages">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,3" Padding="8,6" CornerRadius="5"
+                                        Background="{Binding BubbleBrush}"
+                                        BorderBrush="{Binding RoleAccent}" BorderThickness="0,0,0,1">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding RoleLabel}" FontFamily="Consolas" FontSize="9"
+                                                   Foreground="{Binding RoleAccent}" Margin="0,0,0,2"/>
+                                        <TextBlock Text="{Binding DisplayContent}" FontFamily="Consolas" FontSize="11"
+                                                   Foreground="{DynamicResource Brush.Text}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- Status chip (draggable when unlocked in F7 mode) -->
+        <Border x:Name="StatusChip" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="14,0,0,14"
+                Background="{DynamicResource Brush.OverlayMedium}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                CornerRadius="6" Padding="10,5" Cursor="SizeAll">
+            <Border.RenderTransform><TranslateTransform x:Name="ChipTransform"/></Border.RenderTransform>
+            <TextBlock x:Name="ChipText" Text="F6 lock/unlock · F7 HUD · F8 app · F9 hide · F10 scan · F11 analyze"
+                       FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource Brush.Accent}"/>
+        </Border>
+    </Grid>
+</Window>

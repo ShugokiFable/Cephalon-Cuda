@@ -1,0 +1,33 @@
+<Window x:Class="CephalonCuda.Views.AiActionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cephalon Cuda — AI Suggested Changes"
+        Width="520" MinHeight="160" MaxHeight="560"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        TextElement.Foreground="{DynamicResource Brush.Text}"
+        Background="{DynamicResource Brush.Bg}">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,8">
+            <TextBlock Text="CUDA-ACTION // PROPOSED CHANGES" Style="{StaticResource H1}"/>
+            <TextBlock Text="Uncheck any changes you don't want applied, then click Apply."
+                       Style="{StaticResource Dim}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ActionPanel"/>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="ApplyBtn" Content="Apply Selected" Style="{StaticResource AccentButton}"
+                    Click="OnApply" Padding="16,6"/>
+            <Button Content="Cancel" Margin="8,0,0,0" Click="OnCancel" Padding="16,6"/>
+        </StackPanel>
+    </Grid>
+</Window>

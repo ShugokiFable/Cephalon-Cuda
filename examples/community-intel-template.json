@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "name": "My licensed or manually curated community data",
+    "url": "https://example.invalid/source",
+    "generatedAt": "2026-07-23T00:00:00Z",
+    "licenseNote": "Only import data you are permitted to reuse."
+  },
+  "tiers": [
+    {
+      "category": "Warframes",
+      "itemName": "Saryn Prime",
+      "tier": "S",
+      "rank": 1,
+      "votes": 0,
+      "score": 0.0,
+      "patch": "current",
+      "notes": "Example row. Replace or delete it.",
+      "url": "https://overframe.gg/tier-list/warframes/",
+      "updatedAt": "2026-07-23T00:00:00Z"
+    }
+  ],
+  "builds": [
+    {
+      "itemName": "Saryn Prime",
+      "buildName": "Example endgame build",
+      "author": "Your source",
+      "score": 0.0,
+      "votes": 0,
+      "forma": 0,
+      "patch": "current",
+      "tags": ["steel-path", "general"],
+      "mods": ["Example Mod"],
+      "guide": "Explain rotation, arcanes, shards and substitutions.",
+      "url": "https://overframe.gg/items/arsenal/53/saryn-prime/",
+      "updatedAt": "2026-07-23T00:00:00Z"
+    }
+  ]
+}

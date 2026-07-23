@@ -1,0 +1,50 @@
+<UserControl x:Class="CephalonCuda.Views.AdvisorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Background="{DynamicResource Brush.Bg}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="{DynamicResource Brush.CardGradient}" BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="0,0,0,1" Padding="18,13">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="34" Height="34" CornerRadius="10" Background="{DynamicResource Brush.AccentGradient}"
+                                Effect="{DynamicResource Fx.GlowSoft}" Margin="0,0,10,0">
+                            <TextBlock Text="✦" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontSize="16" Foreground="{DynamicResource Brush.OnAccent}"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="AI ADVISOR" FontFamily="Segoe UI Semibold" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="Query-matched live intel · inventory · Foundry · market · return context"
+                                       Style="{StaticResource Dim}" FontSize="10.5"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="▣  Analyze screen" Click="OnSnapScreen" Style="{StaticResource SmallButton}"
+                            ToolTip="Capture the game or primary screen and send it to the vision model"/>
+                    <Button Content="⌁  Read to memory" Click="OnReadScreen" Style="{StaticResource SmallButton}" Margin="7,0,0,0"
+                            ToolTip="OCR the current screen into persistent advisor context without spending a vision call"/>
+                    <Button Content="Forget captures" Click="OnForgetCaptures" Style="{StaticResource GhostButton}" Margin="7,0,0,0"/>
+                    <Button Content="Clear chat" Click="OnClearChat" Style="{StaticResource GhostButton}" Margin="2,0,0,0"/>
+                    <Border Style="{StaticResource Pill}" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="ModelLabel" Style="{StaticResource Eyebrow}" FontFamily="Cascadia Mono, Consolas"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="{DynamicResource Brush.Bg}">
+            <wv2:WebView2 x:Name="Web"/>
+        </Border>
+        <TextBlock x:Name="FallbackText" Grid.Row="1" Visibility="Collapsed" Margin="30"
+                   TextWrapping="Wrap" Style="{StaticResource Dim}"/>
+    </Grid>
+</UserControl>

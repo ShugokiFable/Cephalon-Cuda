@@ -1,0 +1,75 @@
+<UserControl x:Class="CephalonCuda.Views.RelicPlannerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Margin="{DynamicResource Metric.PageMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="EXPECTED VALUE ENGINE" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+                <TextBlock Text="Relic Planner" Style="{StaticResource H1}" Margin="0"/>
+                <TextBlock Text="Rank relics by expected Platinum, refinement, owned quantity, and current fissure access." Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Content="▣  Scan relics" Click="OnScanRelics"
+                        ToolTip="Capture the game's relic inventory screen and auto-detect relics via AI vision"/>
+                <Button Content="✦  Suggest" Style="{StaticResource AccentButton}" Click="OnSuggest" Margin="8,0,0,0"
+                        ToolTip="AI recommends which relics to focus on based on your inventory, EV, and active fissures"/>
+            </StackPanel>
+        </DockPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBlock Text="Refinement:" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource Dim}"/>
+            <ComboBox x:Name="RefinementBox" Width="140" SelectionChanged="OnRefinementChanged"/>
+            <TextBox x:Name="SearchBox" Width="220" Margin="16,0,0,0" TextChanged="OnSearchChanged"
+                     ToolTip="Search relic, e.g. 'Axi A15'"/>
+            <Button Content="⟳ Recompute" Click="OnRecompute" Margin="16,0,0,0"/>
+            <TextBlock x:Name="StatusText" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="16,0,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+                <DataGrid x:Name="RelicGrid" SelectionChanged="OnRelicSelected">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="RELIC" Binding="{Binding DisplayName}" Width="110"/>
+                        <DataGridTextColumn Header="EV (PLAT)" Binding="{Binding ExpectedPlat, StringFormat={}{0:0.0}}" Width="90"/>
+                        <DataGridTextColumn Header="BEST DROP" Binding="{Binding BestItem}" Width="*"/>
+                        <DataGridTextColumn Header="BEST PLAT" Binding="{Binding BestPlat, StringFormat={}{0:0}}" Width="90"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <StackPanel Grid.Column="1">
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock x:Name="DetailHeader" Text="SELECT A RELIC" Style="{StaticResource H2}"/>
+                        <DataGrid x:Name="RewardGrid" MaxHeight="320">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="REWARD" Binding="{Binding ItemName}" Width="*"/>
+                                <DataGridTextColumn Header="%" Binding="{Binding Chance, StringFormat={}{0:0.#}}" Width="55"/>
+                                <DataGridTextColumn Header="PLAT" Binding="{Binding Plat, StringFormat={}{0:0.#}}" Width="65"/>
+                                <DataGridTextColumn Header="DUCATS" Binding="{Binding Ducats}" Width="70"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="ACTIVE FISSURES FOR THIS TIER" Style="{StaticResource H2}"/>
+                        <ListBox x:Name="FissureList" MaxHeight="220"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,94 @@
+<UserControl x:Class="CephalonCuda.Views.MasteryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Margin="{DynamicResource Metric.PageMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="MASTERY ROADMAP" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+                <TextBlock Text="Mastery Helper" Style="{StaticResource H1}" Margin="0"/>
+                <TextBlock Text="Find efficient unmastered gear and turn the catalog into a practical MR route." Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Content="▣  Scan profile" Click="OnScanProfile"
+                        ToolTip="Capture the game's profile or Arsenal screen and auto-mark mastered items via AI vision"/>
+                <Button Content="↻  Sync catalog" Click="OnSync" Margin="8,0,0,0"/>
+            </StackPanel>
+        </DockPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+            <Border Style="{StaticResource Card}" Margin="0,0,10,0" MinWidth="150">
+                <StackPanel>
+                    <TextBlock Text="EST. MR (TRACKED)" Style="{StaticResource Dim}"/>
+                    <TextBlock x:Name="MrText" Text="0" FontFamily="Consolas" FontSize="22" Foreground="{DynamicResource Brush.Accent}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}" Margin="0,0,10,0" MinWidth="170">
+                <StackPanel>
+                    <TextBlock Text="TRACKED MASTERY XP" Style="{StaticResource Dim}"/>
+                    <TextBlock x:Name="XpText" Text="0" FontFamily="Consolas" FontSize="22"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}" MinWidth="170">
+                <StackPanel>
+                    <TextBlock Text="MASTERED" Style="{StaticResource Dim}"/>
+                    <TextBlock x:Name="CountText" Text="0 / 0" FontFamily="Consolas" FontSize="22" Foreground="{DynamicResource Brush.Gold}"/>
+                </StackPanel>
+            </Border>
+            <TextBlock Style="{StaticResource Dim}" VerticalAlignment="Bottom" Margin="14,0,0,4" TextWrapping="Wrap" MaxWidth="360"
+                       Text="Estimate covers equipment only — star chart, intrinsics and junctions add more. Set your true MR in Settings for AI context."/>
+        </StackPanel>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBox x:Name="FilterBox" Width="220" TextChanged="OnFilterChanged" ToolTip="Filter…"/>
+                        <ComboBox x:Name="KindBox" Width="130" Margin="8,0,0,0" SelectionChanged="OnFilterOptionChanged">
+                            <ComboBoxItem Content="All" IsSelected="True"/>
+                            <ComboBoxItem Content="Warframe"/>
+                            <ComboBoxItem Content="Weapon"/>
+                        </ComboBox>
+                        <CheckBox x:Name="UnmasteredOnly" Content="Unmastered only" Margin="12,0,0,0" VerticalAlignment="Center"
+                                  Checked="OnFilterOptionChanged" Unchecked="OnFilterOptionChanged"/>
+                    </StackPanel>
+                    <DataGrid x:Name="ItemGrid">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="✓" Width="40">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Mastered, Mode=OneWay}" Click="OnMasteredToggled" Tag="{Binding}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="NAME" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="KIND" Binding="{Binding Kind}" Width="90"/>
+                            <DataGridTextColumn Header="TYPE" Binding="{Binding Type}" Width="110"/>
+                            <DataGridTextColumn Header="MR REQ" Binding="{Binding MasteryReq}" Width="70"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="LEVEL THESE NEXT" Style="{StaticResource H2}"/>
+                    <TextBlock DockPanel.Dock="Top" x:Name="SuggestStatus" Style="{StaticResource Dim}" Margin="0,0,0,6"
+                               Text="Unmastered gear usable at your MR, highest requirement first."/>
+                    <ListBox x:Name="SuggestList"/>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

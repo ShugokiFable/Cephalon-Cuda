@@ -1,0 +1,67 @@
+<UserControl x:Class="CephalonCuda.Views.FoundryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <Grid Margin="{DynamicResource Metric.PageMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="CRAFTING QUEUE" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+                <TextBlock Text="Foundry" Style="{StaticResource H1}" Margin="0"/>
+                <TextBlock Text="Track completion times, claim-ready items, and your next crafting dependencies." Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+            </StackPanel>
+            <Button Content="▣  Scan Foundry screen" DockPanel.Dock="Right" HorizontalAlignment="Right"
+                    VerticalAlignment="Center" Click="OnScanFoundry"
+                    ToolTip="Capture the game's Foundry screen and auto-detect builds via AI vision"/>
+        </DockPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock Text="START A BUILD TIMER" Style="{StaticResource H2}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="JobName" Width="260" ToolTip="What are you building? e.g. 'Wisp Prime Systems'"/>
+                    <ComboBox x:Name="PresetBox" Width="190" Margin="8,0,0,0"/>
+                    <TextBox x:Name="CustomMinutes" Width="80" Margin="8,0,0,0" ToolTip="Minutes (overrides preset if set)"/>
+                    <Button Content="⚒ Start" Style="{StaticResource AccentButton}" Margin="8,0,0,0" Click="OnAdd"/>
+                    <TextBlock x:Name="AddStatus" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="12,0,0,0" MaxWidth="340" TextWrapping="Wrap"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Text="ACTIVE BUILDS" Style="{StaticResource H2}"/>
+                    <CheckBox x:Name="ShowClaimed" Content="Show claimed" HorizontalAlignment="Right"
+                              Checked="OnShowClaimedChanged" Unchecked="OnShowClaimedChanged"/>
+                </DockPanel>
+                <ItemsControl x:Name="JobList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource Brush.PanelAlt}" CornerRadius="6" Padding="12,8" Margin="0,0,0,8"
+                                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                                <DockPanel>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <TextBlock Text="{Binding Remaining}" FontFamily="Consolas" FontSize="18"
+                                                   Foreground="{Binding RemainingBrush}" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                        <Button Content="Claim" Click="OnClaim" Tag="{Binding Id}" Margin="0,0,6,0"/>
+                                        <Button Content="✕" Style="{StaticResource DangerButton}" Click="OnDelete" Tag="{Binding Id}"/>
+                                    </StackPanel>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Info}" Style="{StaticResource Dim}"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,304 @@
+<UserControl x:Class="CephalonCuda.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             TextElement.Foreground="{DynamicResource Brush.Text}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="{DynamicResource Metric.PageMargin}" MaxWidth="1040" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.ColumnSpan="2" Margin="0,0,0,12">
+                <TextBlock Text="PERSONALIZE YOUR CEPHALON" Style="{StaticResource Eyebrow}" Margin="0,0,0,5"/>
+                <TextBlock Text="Settings" Style="{StaticResource H1}" Margin="0"/>
+                <TextBlock Text="Tune the advisor, live-data automation, appearance, density, overlay, and privacy behavior."
+                           Style="{StaticResource Dim}" Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="0,0,10,0">
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="OPENROUTER API" Style="{StaticResource H2}"/>
+                        <Label Content="API key (stored encrypted with Windows DPAPI)"/>
+                        <PasswordBox x:Name="ApiKeyBox"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Save key" Style="{StaticResource AccentButton}" Click="OnSaveKey"/>
+                            <Button Content="Test connection" Click="OnTestKey" Margin="8,0,0,0"/>
+                            <TextBlock x:Name="KeyStatus" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <Separator/>
+                        <Label Content="Chat model (build advice, market analysis, farming plans)"/>
+                        <ComboBox x:Name="ChatModelBox" SelectionChanged="OnModelChanged"/>
+                        <Label Content="Background model (cheap/fast utility calls)" Margin="0,8,0,0"/>
+                        <ComboBox x:Name="BackgroundModelBox" SelectionChanged="OnModelChanged"/>
+                        <Label Content="Vision model (screenshot analysis / OCR fallback)" Margin="0,8,0,0"/>
+                        <ComboBox x:Name="VisionModelBox" SelectionChanged="OnModelChanged"/>
+
+                        <Label Content="Custom model id" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="CustomModelBox" Width="250" ToolTip="e.g. anthropic/claude-sonnet-5"/>
+                            <Button Content="→ Chat" Click="OnCustomChat" Margin="6,0,0,0"/>
+                            <Button Content="→ Bkgd" Click="OnCustomBackground" Margin="6,0,0,0"/>
+                            <Button Content="→ Vision" Click="OnCustomVision" Margin="6,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="PLAYER PROFILE (AI CONTEXT)" Style="{StaticResource H2}"/>
+                        <Label Content="Tenno callsign / preferred name"/>
+                        <TextBox x:Name="CallsignBox" ToolTip="Optional. Used by the advisor and local profile only." Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+                            <StackPanel><Label Content="Advisor style"/><ComboBox x:Name="AdvisorToneBox" SelectionChanged="OnGuidanceSelectionChanged"/></StackPanel>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0"><Label Content="Routine time budget"/><ComboBox x:Name="RoutineBudgetBox" SelectionChanged="OnGuidanceSelectionChanged"/></StackPanel>
+                        </Grid>
+                        <CheckBox x:Name="BeginnerWarningsBox" Content="Always show beginner traps, prerequisites, sell/keep warnings, and bad-value purchase warnings"
+                                  Checked="OnGuidanceChanged" Unchecked="OnGuidanceChanged" Margin="0,0,0,8"/>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+                                <Label Content="Mastery Rank"/>
+                                <TextBox x:Name="MrBox" Width="80"/>
+                            </StackPanel>
+                            <StackPanel Margin="14,0,0,0">
+                                <Label Content="Platinum owned"/>
+                                <TextBox x:Name="PlatBox" Width="100"/>
+                            </StackPanel>
+                            <Button Content="Save" Click="OnSaveProfile" VerticalAlignment="Bottom" Margin="14,0,0,0"/>
+                        </StackPanel>
+                        <Label Content="Profile notes — tell the advisor everything: owned frames, focus schools, standings, goals, incarnons, slots…" Margin="0,8,0,0"/>
+                        <TextBox x:Name="NotesBox" AcceptsReturn="True" TextWrapping="Wrap" Height="120"
+                                 VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <Button Content="Save notes" Click="OnSaveNotes"/>
+                            <TextBlock x:Name="ProfileStatus" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="APPEARANCE LAB" Style="{StaticResource H2}" Margin="0,0,0,4"/>
+                                <TextBlock Text="Every preset changes the complete visual system live, including open views, dialogs, overlays, and the Advisor."
+                                           Style="{StaticResource Dim}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="Reset appearance" Style="{StaticResource GhostButton}"
+                                    Click="OnResetAppearance" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                        </Grid>
+
+                        <Label Content="Theme preset" Margin="0,10,0,0"/>
+                        <ListBox x:Name="ThemeGallery" SelectionChanged="OnThemeChanged" MaxHeight="360">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate><UniformGrid Columns="2"/></ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <Setter Property="Margin" Value="0,0,8,8"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="11">
+                                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                        <Border Height="38" CornerRadius="9" Background="{Binding Bg}"
+                                                BorderBrush="{Binding Border}" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Border Width="64" HorizontalAlignment="Left" Background="{Binding PanelAlt}"/>
+                                                <Border Width="7" HorizontalAlignment="Left" Margin="64,0,0,0" Background="{Binding Accent}"/>
+                                                <Border Width="24" Height="24" CornerRadius="8" HorizontalAlignment="Right" Margin="0,0,7,0"
+                                                        Background="{Binding Accent}" BorderBrush="{Binding AccentAlt}" BorderThickness="1"/>
+                                            </Grid>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="{Binding Name}" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,1"/>
+                                        <TextBlock Grid.Row="2" Text="{Binding Tagline}" Style="{StaticResource Muted}"
+                                                   FontFamily="Cascadia Mono, Consolas" FontSize="8.5"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <Label Content="Startup workspace"/>
+                                <ComboBox x:Name="StartupPageBox" SelectionChanged="OnStartupPageChanged"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <Label Content="Custom accent override"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBox x:Name="AccentBox" ToolTip="#RRGGBB, e.g. #FF8800"/>
+                                    <Border x:Name="AccentSwatch" Grid.Column="1" Width="38" Height="38" CornerRadius="10" Margin="7,0,0,0"
+                                            Background="{DynamicResource Brush.AccentGradient}" BorderBrush="{DynamicResource Brush.AccentMuted}"
+                                            BorderThickness="1" Effect="{DynamicResource Fx.GlowSoft}"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
+                                    <Button Content="Apply accent" Style="{StaticResource SmallButton}" Click="OnApplyAccent"/>
+                                    <Button Content="Use preset" Style="{StaticResource GhostButton}" Click="OnResetAccent" Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Style="{StaticResource Surface}" Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Interface density and motion" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                        <CheckBox x:Name="CompactModeBox" Content="Compact density" Checked="OnPersonalizationChanged" Unchecked="OnPersonalizationChanged" Margin="0,0,16,0"/>
+                                        <CheckBox x:Name="ReducedMotionBox" Content="Reduced motion" Checked="OnPersonalizationChanged" Unchecked="OnPersonalizationChanged"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                                    <TextBlock Text="UI SCALE" Style="{StaticResource Eyebrow}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                        <Slider x:Name="ScaleSlider" Width="170" Minimum="80" Maximum="130" TickFrequency="5"
+                                                IsSnapToTickEnabled="True" ValueChanged="OnScaleChanged" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ScaleLabel" Text="100%" FontFamily="Cascadia Mono, Consolas"
+                                                   VerticalAlignment="Center" Margin="10,0,0,0" Foreground="{DynamicResource Brush.Accent}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <TextBlock x:Name="AppearanceStatus" Text="Theme changes apply instantly. No restart required."
+                                   Style="{StaticResource Dim}" Margin="0,9,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="WARFRAME.MARKET ACCOUNT" Style="{StaticResource H2}"/>
+                        <Label Content="warframe.market profile slug / in-game name (for public order sync)"/>
+                        <TextBox x:Name="MarketUserBox"/>
+                        <Label Content="Access token (optional — encrypted; enables authenticated sync)" Margin="0,8,0,0"/>
+                        <PasswordBox x:Name="MarketJwtBox"/>
+                        <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,6,0,0"
+                                   Text="On warframe.market press F12 → Application tab → Local Storage → https://warframe.market → copy the current access-token value. Paste it above; Bearer/JWT prefixes are accepted and removed automatically."/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Save" Style="{StaticResource AccentButton}" Click="OnSaveMarket"/>
+                            <Button Content="Test / sync now" Click="OnTestMarket" Margin="8,0,0,0"/>
+                            <TextBlock x:Name="MarketStatus" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="GAME LOG" Style="{StaticResource H2}"/>
+                        <Label Content="EE.log path (read-only tail)"/>
+                        <TextBox x:Name="EeLogBox"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Save path" Click="OnSaveLogPath"/>
+                            <TextBlock x:Name="LogPathStatus" Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="DATA ENGINE" Style="{StaticResource H2}"/>
+                        <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,8"
+                                   Text="The advisor uses query-matched SQLite retrieval. Official items, official PC drop tables, world state, relics, market snapshots and your public market orders refresh automatically with safe caching and stale-data fallback."/>
+                        <CheckBox x:Name="AutoDataRefreshBox" Content="Automatically keep live databases current"
+                                  Checked="OnDataAutomationChanged" Unchecked="OnDataAutomationChanged" Margin="0,0,0,6"/>
+                        <CheckBox x:Name="AutoReturnBriefingBox" Content="Automatically open a focused briefing after a meaningful absence"
+                                  Checked="OnDataAutomationChanged" Unchecked="OnDataAutomationChanged" Margin="0,0,0,8"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <Label Content="Refresh check cadence" VerticalAlignment="Center" Padding="0,0,8,0"/>
+                            <ComboBox x:Name="DataRefreshCadenceBox" Width="150" SelectionChanged="OnDataCadenceChanged"/>
+                            <TextBlock Text="Sources still use their own respectful TTLs." Style="{StaticResource Dim}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="⟳ Refresh all live data" Style="{StaticResource AccentButton}" Click="OnRefreshAllData"/>
+                            <Button Content="⟳ Mastery data" Click="OnRefreshMastery" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="📁 Open data folder" Click="OnOpenDataFolder"/>
+                            <Button Content="🧹 Clear AI cache" Click="OnClearAiCache" Margin="8,0,0,0"/>
+                            <Button Content="Optimize DB" Click="OnOptimizeDatabase" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <TextBlock x:Name="DataStatus" Style="{StaticResource Dim}" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="IMMERSIVE MODE (F8)" Style="{StaticResource H2}"/>
+                        <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,0,0,8"
+                                   Text="Docks the whole app over the game — browse relics, sync markets and chat with the advisor without alt-tabbing. Warframe must be Borderless/Windowed."/>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+                                <Label Content="Dock"/>
+                                <ComboBox x:Name="DockBox" Width="100" SelectionChanged="OnImmersiveOptionChanged">
+                                    <ComboBoxItem Content="Right"/>
+                                    <ComboBoxItem Content="Left"/>
+                                    <ComboBoxItem Content="Float"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Margin="12,0,0,0">
+                                <Label Content="Width %"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Slider x:Name="WidthSlider" Width="120" Minimum="25" Maximum="60" TickFrequency="5"
+                                            IsSnapToTickEnabled="True" ValueChanged="OnImmersiveSliderChanged" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="WidthLabel" FontFamily="Consolas" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Margin="12,0,0,0">
+                                <Label Content="Opacity %"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Slider x:Name="OpacitySlider" Width="120" Minimum="70" Maximum="100" TickFrequency="5"
+                                            IsSnapToTickEnabled="True" ValueChanged="OnImmersiveSliderChanged" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="OpacityLabel" FontFamily="Consolas" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <CheckBox x:Name="AutoEnterBox" Content="Auto-enter Immersive Mode when Warframe is detected"
+                                  Margin="0,10,0,0" Checked="OnBehaviorChanged" Unchecked="OnBehaviorChanged"/>
+                        <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap" Margin="0,6,0,0"
+                                   Text="Note: below 100% opacity the Advisor panel may render solid on some GPUs — everything else fades fine."/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="BEHAVIOR" Style="{StaticResource H2}"/>
+                        <CheckBox x:Name="TrayBox" Content="Minimize to tray instead of taskbar"
+                                  Margin="0,4,0,6" Checked="OnBehaviorChanged" Unchecked="OnBehaviorChanged"/>
+                        <CheckBox x:Name="OverlayStartupBox" Content="Launch HUD overlay automatically on startup"
+                                  Margin="0,0,0,6" Checked="OnBehaviorChanged" Unchecked="OnBehaviorChanged"/>
+                        <CheckBox x:Name="FoundryNotifyBox" Content="Tray notification when a foundry build completes"
+                                  Checked="OnBehaviorChanged" Unchecked="OnBehaviorChanged"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="HOW THE ADVISOR SEES YOU" Style="{StaticResource H2}"/>
+                        <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap"
+                                   Text="DE removed the public player-profile API, so there is no one-click sync of MR, plat, codex, missions, standings, incarnons or slots by username. Cephalon Cuda assembles your profile from what IS accessible: (1) EE.log events as you play, (2) warframe.market orders + reputation, (3) the MR/plat/notes you enter above, and (4) 'Read screen → memory' in the AI Advisor — open any screen (arsenal, profile, standings) and OCR it straight into the advisor's context. Everything here is injected into every advisor reply."/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="ANTI-CHEAT POLICY" Style="{StaticResource H2}"/>
+                        <TextBlock Style="{StaticResource Dim}" TextWrapping="Wrap"
+                                   Text="Cephalon Cuda never reads game memory and never injects code. All game state comes from: (1) read-only tailing of EE.log, (2) DXGI screen capture + OCR (strictly visual), and (3) public web APIs (Warframe world state, warframe.market, WFCD drop data). This is the same externals-only approach used by established community tools."/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

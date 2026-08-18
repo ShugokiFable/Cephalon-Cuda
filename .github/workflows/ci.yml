@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: dotnet build (warnings as errors)
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore src/CephalonCuda/CephalonCuda.csproj -r win-x64 --nologo
+      - name: Build with warnings as errors
+        run: dotnet build src/CephalonCuda/CephalonCuda.csproj -c Release -r win-x64 --no-restore --nologo -p:TreatWarningsAsErrors=true

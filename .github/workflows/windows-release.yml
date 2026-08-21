@@ -44,7 +44,7 @@ jobs:
           New-Item -ItemType Directory -Force artifact | Out-Null
           Copy-Item publish/CephalonCuda.exe artifact/
           Copy-Item NEXUS_README.txt,NEXUS_DESCRIPTION_BBCODE.txt,CHANGELOG.md,PRIVACY_AND_DATA.md,THIRD_PARTY_NOTICES.md artifact/
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Cephalon-Cuda-2.2-Nexus-Release
           path: artifact
